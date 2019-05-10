@@ -10,3 +10,16 @@ export const fetchJobs = () => async (dispatch, getState) => {
       });
     });
 };
+
+export const createJob = userData => async (dispatch, getState) => {
+  console.log(userData);
+  axios.post('api/jobs', userData);
+};
+
+export const updateJob = (_id, userData) => async (dispatch, getState) => {
+  axios.patch(`api/jobs/${_id}`, userData);
+};
+
+export const deleteJob = _id => async (dispatch, getState) => {
+  axios.delete(`api/jobs/${_id}`);
+};
