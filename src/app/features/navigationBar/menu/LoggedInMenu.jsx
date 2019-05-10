@@ -13,22 +13,16 @@ import PropTypes from 'prop-types';
  * @returns {*}
  * @constructor
  */
-const LoggedInMenu = ({ logout }) => {
-  const profile = {
-    _id: '123',
-    avatarUrl: '',
-    displayName: 'John Doe',
-  };
-
-  const { _id, avatarUrl, displayName } = profile;
+const LoggedInMenu = ({ auth, logout }) => {
+  const { _id, avatarUrl, name } = auth.user;
 
   return (
     <Menu.Item position="right">
-      <Image avatar spaced="right" src={avatarUrl}/>
-      <Dropdown pointing="top left" text={displayName}>
+      <Image avatar spaced="right" src={avatarUrl} />
+      <Dropdown pointing="top left" text={name}>
         <Dropdown.Menu>
-          <Dropdown.Item as={Link} to={`/profile/${_id}`} text="My Profile"/>
-          <Dropdown.Item onClick={logout} text="Log out"/>
+          <Dropdown.Item as={Link} to={`/profile/${_id}`} text="My Profile" />
+          <Dropdown.Item onClick={logout} text="Log out" />
         </Dropdown.Menu>
       </Dropdown>
     </Menu.Item>

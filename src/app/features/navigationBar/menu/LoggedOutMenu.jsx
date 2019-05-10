@@ -13,8 +13,8 @@ import { Menu } from 'semantic-ui-react';
  */
 const LoggedOutMenu = ({ login, register }) => (
   <Menu.Menu position="right">
-    <Menu.Item onClick={login} name="Login"/>
-    <Menu.Item onClick={register} name="Register"/>
+    <Menu.Item onClick={login} name="Login" />
+    <Menu.Item onClick={register} name="Register" />
   </Menu.Menu>
 
 );

@@ -10,24 +10,20 @@ import EditProfilePage from '../features/profilePage/EditProfilePage';
 import ProfilePage from '../features/profilePage/ProfilePage';
 import JobRegistrationPage from '../features/jobRegistration/JobRegistrationPage';
 
-const Router = () => {
-  const authed = false;
-
-  return (
-    <Switch>
-      <Redirect exact from="/" to="/jobs"/>
-      <Route path="/login" component={LoginPage}/>
-      <Route path="/register" component={RegistrationPage}/>
-      <Route path="/jobs" component={JobDashboard}/>
-      <Route path="/job/:id" component={JobDetailPage}/>
-      <PrivateRoute path="/updateJob/:id" authed={authed} component={JobRegistrationPage}/>
-      <PrivateRoute path="/createJob" authed={authed} component={JobRegistrationPage}/>
-      <PrivateRoute path="/editProfile/:id" authed={authed} component={EditProfilePage}/>
-      <Route path="/profile/:id" component={ProfilePage}/>
-      <Route path="/error" component={ErrorPage}/>
-      <Route component={JobDashboard}/>
-    </Switch>
-  );
-};
+const Router = () => (
+  <Switch>
+    <Redirect exact from="/" to="/jobs" />
+    <Route exact path="/login" component={LoginPage} />
+    <Route exact path="/register" component={RegistrationPage} />
+    <Route exact path="/jobs" component={JobDashboard} />
+    <Route exact path="/job/:id" component={JobDetailPage} />
+    <PrivateRoute exact path="/updateJob/:id" component={JobRegistrationPage} />
+    <PrivateRoute exact path="/createJob" component={JobRegistrationPage} />
+    <PrivateRoute exact path="/editProfile/:id" component={EditProfilePage} />
+    <Route exact path="/profile/:id" component={ProfilePage} />
+    <Route exact path="/error" component={ErrorPage} />
+    <Route component={JobDashboard} />
+  </Switch>
+);
 
 export default withRouter(Router);

@@ -7,11 +7,11 @@ import Router from './router/Router';
 function App() {
   return (
     <div>
-      <NavBar/>
+      <NavBar />
       <Container className="main">
-        <Router/>
+        <Router />
       </Container>
-      <Footer/>
+      <Footer />
     </div>
   );
 }
