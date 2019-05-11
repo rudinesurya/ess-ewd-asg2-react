@@ -12,7 +12,6 @@ export const fetchJobs = () => async (dispatch, getState) => {
 };
 
 export const createJob = userData => async (dispatch, getState) => {
-  console.log(userData);
   axios.post('api/jobs', userData);
 };
 

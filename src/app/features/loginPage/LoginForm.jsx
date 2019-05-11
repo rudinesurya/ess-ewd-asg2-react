@@ -6,8 +6,8 @@ import { combineValidators, isRequired } from 'revalidate';
 import { Button, Form, Label } from 'semantic-ui-react';
 
 const LoginForm = ({
-                     login, handleSubmit, invalid, submitting, error,
-                   }) => (
+  login, handleSubmit, invalid, submitting, error,
+}) => (
   <Form size="large" onSubmit={handleSubmit(login)}>
 
     <Field
