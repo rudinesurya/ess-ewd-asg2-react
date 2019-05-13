@@ -3,22 +3,30 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button, Card, Image } from 'semantic-ui-react';
+import Spinner from '../../utils/Spinner';
+import { getProfileByUserId } from '../../redux/actions/profile';
 
 
 class ProfilePage extends React.Component {
+  componentDidMount() {
+    const { uId, getProfileByUserId } = this.props;
+    getProfileByUserId(uId);
+  }
+
   cancelBtnHandler = () => {
     const { history } = this.props;
     history.goBack();
   };
 
   render() {
-    const { auth, uId } = this.props;
+    const { auth, profile, uId } = this.props;
+    if (profile.loading || profile.profile === null) return (<Spinner />);
+
     const isCurrentUser = auth.isAuthenticated && auth.user._id === uId;
-    const avatarUrl = '';
-    const name = 'John Doe';
-    const city = 'London, UK';
-    const dateString = 'some date';
-    const bio = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+    const {
+      createdDate, bio, location, user: { name, avatarUrl },
+    } = profile.profile;
+    const dateString = new Date(createdDate).toLocaleDateString();
 
     return (
       <Card centered>
@@ -26,11 +34,10 @@ class ProfilePage extends React.Component {
         <Image src={avatarUrl} size="large" />
         <Card.Content>
           <Card.Header>{name}</Card.Header>
-          <Card.Header>{city}</Card.Header>
+          <Card.Header>{location}</Card.Header>
           <Card.Meta>
             <span className="date">
-Joined in
-              {dateString}
+              {`Joined in ${dateString}`}
             </span>
           </Card.Meta>
           <Card.Description>{bio}</Card.Description>
@@ -56,14 +63,20 @@ Joined in
 
 const mapStateToProps = (state, ownProps) => ({
   auth: state.auth,
+  profile: state.profile,
   uId: ownProps.match.params.id,
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  getProfileByUserId,
+};
 
 ProfilePage.propTypes = {
-  auth: PropTypes.any,
-  uId: PropTypes.any,
+  auth: PropTypes.object.isRequired,
+  profile: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
+  getProfileByUserId: PropTypes.func.isRequired,
+  uId: PropTypes.string.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfilePage);

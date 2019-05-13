@@ -1,7 +1,28 @@
 import axios from 'axios';
-import jwtDecode from 'jwt-decode';
 import setAuthToken from '../../utils/setAuthToken';
-import { GET_ERRORS, SET_CURRENT_USER } from '../actionTypes/actionTypes';
+import {
+  AUTH_ERROR, CLEAR_PROFILE, LOAD_CURRENT_USER, LOGIN_FAIL, LOGIN_SUCCESS, LOGOUT, REGISTER_FAIL,
+  REGISTER_SUCCESS,
+} from '../actionTypes/actionTypes';
+
+export const loadCurrentUser = () => async dispatch => {
+  if (localStorage.jwtToken) {
+    setAuthToken(localStorage.jwtToken);
+  }
+
+  try {
+    const res = await axios.get('/api/users/current');
+
+    dispatch({
+      type: LOAD_CURRENT_USER,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: AUTH_ERROR,
+    });
+  }
+};
 
 /**
  * Register new user
@@ -9,27 +30,23 @@ import { GET_ERRORS, SET_CURRENT_USER } from '../actionTypes/actionTypes';
  * @param userData
  * @returns {Function}
  */
-export const registerUser = userData => (dispatch) => {
-  const creds = {
-    name: userData.name,
-    email: userData.email,
-    password: userData.password,
-    password2: userData.password2,
-  };
+export const registerUser = ({ name, email, password, password2 }) => async (dispatch) => {
+  const payload = { name, email, password, password2 };
 
-  axios
-    .post('/api/users', creds)
-    .then((res) => {
-      const { token } = res.data;
-      localStorage.setItem('jwtToken', token);
-      setAuthToken(token); // Set token to Auth header
-      const decoded = jwtDecode(token);
-      dispatch(setCurrentUser(decoded)); // Set current user
-    })
-    .catch(err => dispatch({
-      type: GET_ERRORS,
-      payload: err.response.data,
-    }));
+  try {
+    const res = await axios.post('/api/users', payload);
+
+    dispatch({
+      type: REGISTER_SUCCESS,
+      payload: res.data.token,
+    });
+
+    dispatch(loadCurrentUser());
+  } catch (err) {
+    dispatch({
+      type: REGISTER_FAIL,
+    });
+  }
 };
 
 /**
@@ -38,25 +55,22 @@ export const registerUser = userData => (dispatch) => {
  * @param userData
  * @returns {Function}
  */
-export const loginUser = userData => (dispatch) => {
-  const creds = {
-    email: userData.email,
-    password: userData.password,
-  };
+export const loginUser = ({ email, password }) => async (dispatch) => {
+  const payload = { email, password };
+  try {
+    const res = await axios.post('/api/users/login', payload);
 
-  axios
-    .post('api/users/login', creds)
-    .then((res) => {
-      const token = res.data;
-      localStorage.setItem('jwtToken', token);
-      setAuthToken(token); // Set token to Auth header
-      const decoded = jwtDecode(token);
-      dispatch(setCurrentUser(decoded)); // Set current user
-    })
-    .catch(err => dispatch({
-      type: GET_ERRORS,
-      payload: err.response.data,
-    }));
+    dispatch({
+      type: LOGIN_SUCCESS,
+      payload: res.data.token,
+    });
+
+    dispatch(loadCurrentUser());
+  } catch (err) {
+    dispatch({
+      type: LOGIN_FAIL,
+    });
+  }
 };
 
 /**
@@ -64,19 +78,7 @@ export const loginUser = userData => (dispatch) => {
  *
  * @returns {Function}
  */
-export const logoutUser = () => (dispatch) => {
-  localStorage.removeItem('jwtToken'); // Remove token from local storage
-  setAuthToken(null); // Reset the auth token
-  dispatch(setCurrentUser(null)); // Reset current user as well
+export const logoutUser = () => dispatch => {
+  dispatch({ type: CLEAR_PROFILE });
+  dispatch({ type: LOGOUT });
 };
-
-/**
- * Set current user
- *
- * @param decoded
- * @returns {{payload: *, type: *}}
- */
-export const setCurrentUser = decoded => ({
-  type: SET_CURRENT_USER,
-  payload: decoded,
-});

@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { fetchJobs } from '../../redux/actions/jobs';
+import { loadJobs } from '../../redux/actions/job';
 import JobList from './JobList';
 
 class JobDashboard extends React.Component {
   componentDidMount() {
-    const { fetchJobs } = this.props;
-    fetchJobs();
+    const { loadJobs } = this.props;
+    loadJobs();
   }
 
   render() {
@@ -19,11 +19,11 @@ class JobDashboard extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  jobs: state.jobs.data,
+  jobs: state.job.jobs,
 });
 
 const mapDispatchToProps = {
-  fetchJobs,
+  loadJobs,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(JobDashboard);

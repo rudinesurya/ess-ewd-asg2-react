@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { Checkbox, InputField, TextAreaField } from 'react-semantic-redux-form';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
-import { createJob, deleteJob, updateJob } from '../../redux/actions/jobs';
+import { createJob, deleteJob, updateJob } from '../../redux/actions/job';
 import MyDatePicker from '../../utils/MyDatePicker';
 import GoogleMapSearchBar from '../../utils/GoogleMapSearchBar';
 

@@ -5,7 +5,7 @@ import { Button, Icon, Item, Label, Segment } from 'semantic-ui-react';
 
 const JobListItem = ({ job }) => {
   const {
-    _id, title, payout, venue, date, urgency, host, participants,
+    _id, title, host: { name: hostName }, payout, venue, date, urgency, host, participants,
   } = job;
 
   const jobAlreadyPast = date && date < Date.now();
@@ -51,8 +51,8 @@ const JobListItem = ({ job }) => {
                 </Item.Meta>
 
                 <Item.Description>
-                  {'Posted by'}
-                  <Link to={`/profile/${host}`}>HostName</Link>
+                  {'Posted by '}
+                  <Link to={`/profile/${host}`}>{hostName}</Link>
                 </Item.Description>
 
               </Item.Content>

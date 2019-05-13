@@ -4,23 +4,17 @@ import { BrowserRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { Provider } from 'react-redux';
 import axios from 'axios';
-import jwtDecode from 'jwt-decode';
 import App from './app/App';
 import ScrollToTop from './app/utils/ScrollToTop';
 import 'semantic-ui-css/semantic.min.css';
 import './index.css';
 import store from './app/redux/store';
-import { setCurrentUser } from './app/redux/actions/auth';
-import setAuthToken from './app/utils/setAuthToken';
+import { loadCurrentUser, setCurrentUser } from './app/redux/actions/auth';
 
-axios.defaults.baseURL = 'https://ess-ewd-nodeserver.herokuapp.com';
+// axios.defaults.baseURL = 'https://ess-ewd-nodeserver.herokuapp.com';
+axios.defaults.baseURL = 'http://localhost:3002';
 
-if (localStorage.jwtToken) {
-  const token = localStorage.jwtToken;
-  setAuthToken(token);
-  const decoded = jwtDecode(token);
-  store.dispatch(setCurrentUser(decoded)); // Set current user
-}
+store.dispatch(loadCurrentUser());
 
 const app = (
   <Provider store={store}>

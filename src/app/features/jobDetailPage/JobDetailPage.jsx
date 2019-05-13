@@ -5,8 +5,15 @@ import JobCommentSection from './JobCommentSection';
 import JobDetailHeader from './JobDetailHeader';
 import JobDetailInfo from './JobDetailInfo';
 import LocationSection from './LocationSection';
+import Spinner from '../../utils/Spinner';
+import { loadJob } from '../../redux/actions/job';
 
 class JobDetailPage extends React.Component {
+  componentDidMount() {
+    const { jobId, loadJob } = this.props;
+    loadJob(jobId);
+  }
+
   takeJobHandler = () => {
 
   };
@@ -20,36 +27,14 @@ class JobDetailPage extends React.Component {
   };
 
   render() {
-    const { auth } = this.props;
-
-    const job = {
-      _id: 'asdasdadsada',
-      title: 'Customer Assistant',
-      host: 'czxasdasdasd',
-      payout: '500',
-      date: new Date(),
-      venue: {
-        name: 'London, UK',
-        location: {
-          type: 'Point',
-          coordinates: [51.5073509, -0.12775829999998223],
-        },
-      },
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      participants: [],
-      comments: [],
-    };
+    const { auth, job, jobId } = this.props;
+    if (job.loading || job.job === null) return <Spinner />;
 
     const authenticated = auth.isAuthenticated;
-    const jobId = job._id;
-    const jobTitle = job.title;
-    const jobDescription = job.description;
-    const hostName = 'John Doe';
-    const dateString = job.date.toLocaleDateString();
-    const venueName = job.venue.name;
-    const venueLatLng = job.venue.location.coordinates;
-    const { participants } = job;
-    const { comments } = job;
+    const dateString = new Date(job.job.date).toLocaleDateString();
+    const {
+      title, host: { name: hostName }, description, venue: { name, location: { coordinates } }, comments, participants,
+    } = job.job;
 
     const isHost = job.host === auth.user._id;
     const isGoing = participants && participants.find(p => p.user === auth.user._id) != null;
@@ -65,7 +50,7 @@ class JobDetailPage extends React.Component {
               isGoing={isGoing}
               dateString={dateString}
               jobId={jobId}
-              jobTitle={jobTitle}
+              jobTitle={title}
               hostName={hostName}
               takeJob={this.takeJobHandler}
               leaveJob={this.leaveJobHandler}
@@ -74,7 +59,7 @@ class JobDetailPage extends React.Component {
 
           <Grid.Row>
             <Grid.Column width={10}>
-              <JobDetailInfo description={jobDescription} participants={participants} />
+              <JobDetailInfo description={description} participants={participants} />
               <JobCommentSection
                 authenticated={authenticated}
                 comments={comments}
@@ -82,7 +67,7 @@ class JobDetailPage extends React.Component {
               />
             </Grid.Column>
             <Grid.Column width={6}>
-              <LocationSection venueName={venueName} lat={venueLatLng[0]} lng={venueLatLng[1]} />
+              <LocationSection venueName={name} lat={coordinates[0]} lng={coordinates[1]} />
             </Grid.Column>
           </Grid.Row>
 
@@ -92,8 +77,14 @@ class JobDetailPage extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state, ownProps) => ({
   auth: state.auth,
+  job: state.job,
+  jobId: ownProps.match.params.id,
 });
 
-export default connect(mapStateToProps)(JobDetailPage);
+const mapDispatchToProps = {
+  loadJob,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(JobDetailPage);
