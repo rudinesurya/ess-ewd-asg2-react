@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import PropTypes from 'redux-form/es/propTypes';
 import JobListItem from './JobListItem';
 
 /**
@@ -12,9 +11,5 @@ const JobList = ({ jobs }) => (
     ))}
   </Fragment>
 );
-
-JobList.propTypes = {
-  jobs: PropTypes.array,
-};
 
 export default JobList;

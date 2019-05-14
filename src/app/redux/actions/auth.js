@@ -20,6 +20,7 @@ export const loadCurrentUser = () => async dispatch => {
   } catch (err) {
     dispatch({
       type: AUTH_ERROR,
+      payload: err.response.data,
     });
   }
 };
@@ -38,13 +39,14 @@ export const registerUser = ({ name, email, password, password2 }) => async (dis
 
     dispatch({
       type: REGISTER_SUCCESS,
-      payload: res.data.token,
+      payload: res.data,
     });
 
     dispatch(loadCurrentUser());
   } catch (err) {
     dispatch({
       type: REGISTER_FAIL,
+      payload: err.response.data,
     });
   }
 };
@@ -62,13 +64,14 @@ export const loginUser = ({ email, password }) => async (dispatch) => {
 
     dispatch({
       type: LOGIN_SUCCESS,
-      payload: res.data.token,
+      payload: res.data,
     });
 
     dispatch(loadCurrentUser());
   } catch (err) {
     dispatch({
       type: LOGIN_FAIL,
+      payload: err.response.data,
     });
   }
 };

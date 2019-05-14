@@ -1,49 +1,65 @@
 import React from 'react';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import { Button, Divider, Form, Grid, Segment } from 'semantic-ui-react';
-import { Field, reduxForm } from 'redux-form';
-import { TextAreaField } from 'react-semantic-redux-form';
+import { Field, initialize, reduxForm } from 'redux-form';
+import { InputField, TextAreaField } from 'react-semantic-redux-form';
 import { connect } from 'react-redux';
 import GoogleMapSearchBar from '../../utils/GoogleMapSearchBar';
+import { getCurrentProfile, updateCurrentProfile } from '../../redux/actions/profile';
+import Spinner from '../../utils/Spinner';
 
 class EditProfilePage extends React.Component {
+  state = {
+    formInitialized: false,
+  };
+
+  componentDidMount() {
+    const { getCurrentProfile } = this.props;
+    getCurrentProfile();
+  }
+
+  componentWillReceiveProps(nextProps, nextContext) {
+    if (this.state.formInitialized) return;
+
+    if (!nextProps.profile.loading && nextProps.profile.profile) {
+      const profile = nextProps.profile.profile;
+      const initialValues = {
+        name: profile.user.name,
+        location: profile.location ? profile.location.name : '',
+        bio: profile.bio,
+      };
+      nextProps.dispatch(initialize('editProfileForm', initialValues));
+
+      this.setState({
+        formInitialized: true,
+        location: profile.location && profile.location.name,
+        locationLatLng: profile.location && profile.location.location.coordinates,
+      });
+    }
+  }
+
   formSubmitHandler = (values) => {
     const {
-      initialValues, history,
+      history, updateCurrentProfile,
     } = this.props;
 
-    const v = this.state.city || initialValues.city;
-    const vll = this.state.cityLatLng || initialValues.cityLatLng;
+    const v = this.state.location;
+    const vll = this.state.locationLatLng;
 
     const newProfile = {
-      location: {
+      name: values.name,
+      location: this.state.location && {
         name: v,
         location: {
           type: 'Point',
-          coordinates: [vll.lat, vll.lng],
+          coordinates: vll,
         },
       },
       bio: values.bio,
     };
 
-    console.log(newProfile);
-
-    if (initialValues._id) {
-    } else {
-      history.push('/jobs');
-    }
+    updateCurrentProfile(newProfile);
     history.goBack();
-  };
-
-  citySelectHandler = (city) => {
-    geocodeByAddress(city)
-      .then(results => getLatLng(results[0]))
-      .then((latLng) => {
-        this.setState({
-          city,
-          cityLatLng: latLng,
-        });
-      });
   };
 
   cancelBtnHandler = () => {
@@ -51,7 +67,21 @@ class EditProfilePage extends React.Component {
     history.goBack();
   };
 
+  locationSelectHandler = (location) => {
+    geocodeByAddress(location)
+      .then(results => getLatLng(results[0]))
+      .then((latLng) => {
+        this.setState({
+          location,
+          locationLatLng: [latLng.lat, latLng.lng],
+        });
+      });
+  };
+
   render() {
+    const { profile } = this.props;
+    if (profile.loading || profile.profile === null) return (<Spinner />);
+
     const {
       handleSubmit, invalid, submitting, error,
     } = this.props;
@@ -62,13 +92,21 @@ class EditProfilePage extends React.Component {
             <React.Fragment>
               <Form onSubmit={handleSubmit(this.formSubmitHandler)}>
                 <Field
-                  name="city"
+                  name="name"
+                  label="Display Name"
+                  type="text"
+                  placeholder="Your Name"
+                  component={InputField}
+                />
+
+                <Field
+                  name="location"
                   label="City"
                   type="text"
                   component={GoogleMapSearchBar}
                   options={{ types: ['(cities)'] }}
                   placeholder="City"
-                  onSelect={this.citySelectHandler}
+                  onSelect={this.locationSelectHandler}
                 />
 
                 <Field
@@ -101,12 +139,16 @@ class EditProfilePage extends React.Component {
 
 const mapStateToProps = state => ({
   auth: state.auth,
-  initialValues: {},
+  profile: state.profile,
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  getCurrentProfile,
+  updateCurrentProfile,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({
   form: 'editProfileForm',
   enableReinitialize: true,
+  keepDirtyOnReinitialize: true,
 })(EditProfilePage));

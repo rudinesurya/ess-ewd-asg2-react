@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { loadJobs } from '../../redux/actions/job';
 import JobList from './JobList';
+import Spinner from '../../utils/Spinner';
 
 class JobDashboard extends React.Component {
   componentDidMount() {
@@ -10,16 +11,17 @@ class JobDashboard extends React.Component {
   }
 
   render() {
-    const { jobs } = this.props;
+    const { job } = this.props;
+    if (job.loading) return (<Spinner />);
 
     return (
-      <JobList jobs={jobs} />
+      <JobList jobs={job.jobs} />
     );
   }
 }
 
 const mapStateToProps = state => ({
-  jobs: state.job.jobs,
+  job: state.job,
 });
 
 const mapDispatchToProps = {

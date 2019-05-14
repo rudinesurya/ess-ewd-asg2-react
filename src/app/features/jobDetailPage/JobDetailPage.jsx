@@ -6,7 +6,9 @@ import JobDetailHeader from './JobDetailHeader';
 import JobDetailInfo from './JobDetailInfo';
 import LocationSection from './LocationSection';
 import Spinner from '../../utils/Spinner';
-import { loadJob } from '../../redux/actions/job';
+import {
+  deleteComment, deleteJob, joinJob, leaveJob, loadJob, postComment,
+} from '../../redux/actions/job';
 
 class JobDetailPage extends React.Component {
   componentDidMount() {
@@ -15,30 +17,42 @@ class JobDetailPage extends React.Component {
   }
 
   takeJobHandler = () => {
-
+    const { jobId, joinJob } = this.props;
+    joinJob(jobId);
   };
 
   leaveJobHandler = () => {
-
+    const { jobId, leaveJob } = this.props;
+    leaveJob(jobId);
   };
 
   addCommentHandler = (values) => {
+    const { jobId, postComment } = this.props;
+    postComment(jobId, { text: values.comment });
+  };
 
+  deleteCommentHandler = (commentId) => {
+    const { jobId, deleteComment } = this.props;
+    deleteComment(jobId, commentId);
+  };
+
+  deleteJobHandler = () => {
+    const { jobId, deleteJob } = this.props;
+    deleteJob(jobId);
   };
 
   render() {
     const { auth, job, jobId } = this.props;
-    if (job.loading || job.job === null) return <Spinner />;
+    if (auth.loading || job.loading || job.job === null) return <Spinner />;
 
     const authenticated = auth.isAuthenticated;
     const dateString = new Date(job.job.date).toLocaleDateString();
     const {
-      title, host: { name: hostName }, description, venue: { name, location: { coordinates } }, comments, participants,
+      title, host: { _id: hostId, name: hostName }, description, venue: { name, location: { coordinates } }, comments, participants,
     } = job.job;
 
-    const isHost = job.host === auth.user._id;
-    const isGoing = participants && participants.find(p => p.user === auth.user._id) != null;
-
+    const isHost = hostId === auth.user._id;
+    const isGoing = participants && participants.find(p => p.user._id === auth.user._id) != null;
 
     return (
       <React.Fragment>
@@ -54,6 +68,7 @@ class JobDetailPage extends React.Component {
               hostName={hostName}
               takeJob={this.takeJobHandler}
               leaveJob={this.leaveJobHandler}
+              deleteJob={this.deleteJobHandler}
             />
           </Grid.Row>
 
@@ -61,9 +76,10 @@ class JobDetailPage extends React.Component {
             <Grid.Column width={10}>
               <JobDetailInfo description={description} participants={participants} />
               <JobCommentSection
-                authenticated={authenticated}
+                auth={auth}
                 comments={comments}
                 addComment={this.addCommentHandler}
+                deleteComment={this.deleteCommentHandler}
               />
             </Grid.Column>
             <Grid.Column width={6}>
@@ -84,7 +100,7 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = {
-  loadJob,
+  loadJob, postComment, deleteComment, joinJob, leaveJob, deleteJob,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(JobDetailPage);

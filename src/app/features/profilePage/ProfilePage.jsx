@@ -20,12 +20,14 @@ class ProfilePage extends React.Component {
 
   render() {
     const { auth, profile, uId } = this.props;
-    if (profile.loading || profile.profile === null) return (<Spinner />);
+    if (auth.loading || profile.loading || profile.profile === null) return (<Spinner />);
 
     const isCurrentUser = auth.isAuthenticated && auth.user._id === uId;
     const {
       createdDate, bio, location, user: { name, avatarUrl },
     } = profile.profile;
+
+    const locationName = location ? location.name : 'Unknown City';
     const dateString = new Date(createdDate).toLocaleDateString();
 
     return (
@@ -34,13 +36,13 @@ class ProfilePage extends React.Component {
         <Image src={avatarUrl} size="large" />
         <Card.Content>
           <Card.Header>{name}</Card.Header>
-          <Card.Header>{location}</Card.Header>
+          <Card.Header>{locationName}</Card.Header>
           <Card.Meta>
             <span className="date">
               {`Joined in ${dateString}`}
             </span>
           </Card.Meta>
-          <Card.Description>{bio}</Card.Description>
+          <Card.Description>{bio || 'n/a'}</Card.Description>
         </Card.Content>
         <Card.Content extra>
           <Button.Group attached="bottom">

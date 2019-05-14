@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {
-  DELETE_JOB, JOB_ERROR, JOB_START_REQUEST, LOAD_JOB, LOAD_JOBS, REGISTER_JOB, UPDATE_JOB,
+  DELETE_COMMENT, DELETE_JOB, JOB_ERROR, JOB_START_REQUEST, JOIN_JOB, LEAVE_JOB, LOAD_JOB,
+  LOAD_JOBS, POST_COMMENT, REGISTER_JOB, UPDATE_JOB,
 } from '../actionTypes/actionTypes';
 
 export const loadJob = (jobId) => async (dispatch, getState) => {
@@ -14,6 +15,7 @@ export const loadJob = (jobId) => async (dispatch, getState) => {
   } catch (err) {
     dispatch({
       type: JOB_ERROR,
+      payload: err.response.data,
     });
   }
 };
@@ -30,13 +32,14 @@ export const loadJobs = () => async (dispatch, getState) => {
   } catch (err) {
     dispatch({
       type: JOB_ERROR,
+      payload: err.response.data,
     });
   }
 };
 
-export const createJob = ({ title, payout, date, venue, description }) => async (dispatch, getState) => {
+export const createJob = ({ title, payout, date, venue, description, urgency }) => async (dispatch, getState) => {
   try {
-    const res = await axios.post('api/jobs', { title, payout, date, venue, description });
+    const res = await axios.post('api/jobs', { title, payout, date, venue, description, urgency });
 
     dispatch({
       type: REGISTER_JOB,
@@ -44,11 +47,12 @@ export const createJob = ({ title, payout, date, venue, description }) => async 
   } catch (err) {
     dispatch({
       type: JOB_ERROR,
+      payload: err.response.data,
     });
   }
 };
 
-export const updateJob = ({ jobId, title, payout, date, venue, description }) => async (dispatch, getState) => {
+export const updateJob = (jobId, { title, payout, date, venue, description }) => async (dispatch, getState) => {
   try {
     const res = await axios.patch(`api/jobs/${jobId}`, { title, payout, date, venue, description });
 
@@ -58,6 +62,7 @@ export const updateJob = ({ jobId, title, payout, date, venue, description }) =>
   } catch (err) {
     dispatch({
       type: JOB_ERROR,
+      payload: err.response.data,
     });
   }
 };
@@ -72,6 +77,67 @@ export const deleteJob = (jobId) => async (dispatch, getState) => {
   } catch (err) {
     dispatch({
       type: JOB_ERROR,
+      payload: err.response.data,
+    });
+  }
+};
+
+export const joinJob = (jobId) => async (dispatch, getState) => {
+  try {
+    const res = await axios.post(`api/jobs/join/${jobId}`);
+
+    dispatch({
+      type: JOIN_JOB,
+    });
+  } catch (err) {
+    dispatch({
+      type: JOB_ERROR,
+      payload: err.response.data,
+    });
+  }
+};
+
+export const leaveJob = (jobId) => async (dispatch, getState) => {
+  try {
+    const res = await axios.post(`api/jobs/leave/${jobId}`);
+
+    dispatch({
+      type: LEAVE_JOB,
+    });
+  } catch (err) {
+    dispatch({
+      type: JOB_ERROR,
+      payload: err.response.data,
+    });
+  }
+};
+
+export const postComment = (jobId, { text }) => async (dispatch, getState) => {
+  try {
+    const res = await axios.post(`api/jobs/comment/${jobId}`, { text });
+
+    dispatch({
+      type: POST_COMMENT,
+    });
+  } catch (err) {
+    dispatch({
+      type: JOB_ERROR,
+      payload: err.response.data,
+    });
+  }
+};
+
+export const deleteComment = (jobId, commentId) => async (dispatch, getState) => {
+  try {
+    const res = await axios.delete(`api/jobs/comment/${jobId}/${commentId}`);
+
+    dispatch({
+      type: DELETE_COMMENT,
+    });
+  } catch (err) {
+    dispatch({
+      type: JOB_ERROR,
+      payload: err.response.data,
     });
   }
 };

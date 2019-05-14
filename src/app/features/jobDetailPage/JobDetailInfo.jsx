@@ -26,7 +26,7 @@ const JobDetailInfo = ({ description, participants }) => (
       </h1>
       <Label.Group circular>
         {participants && participants.map(p => (
-          <Label key="index" as={Link} to={`/profile/${'asd'}`} content="John Doe" />
+          <Label key="index" as={Link} to={`/profile/${p.user._id}`} content={p.user.name} />
         ))}
       </Label.Group>
     </Segment>

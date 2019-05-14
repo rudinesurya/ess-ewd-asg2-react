@@ -1,43 +1,81 @@
 import React from 'react';
 import { Button, Divider, Form, Grid, Segment } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import { Field, reduxForm } from 'redux-form';
+import { Field, initialize, reduxForm } from 'redux-form';
 import { Checkbox, InputField, TextAreaField } from 'react-semantic-redux-form';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
-import { createJob, deleteJob, updateJob } from '../../redux/actions/job';
+import { createJob, deleteJob, loadJob, updateJob } from '../../redux/actions/job';
 import MyDatePicker from '../../utils/MyDatePicker';
 import GoogleMapSearchBar from '../../utils/GoogleMapSearchBar';
 
 class JobRegistrationPage extends React.Component {
+  state = {
+    formInitialized: false,
+  };
+
+  componentDidMount() {
+    const { jobId, loadJob } = this.props;
+    if (jobId) {
+      loadJob(jobId);
+    }
+  }
+
+  componentWillReceiveProps(nextProps, nextContext) {
+    if (this.state.formInitialized) return;
+
+    if (!nextProps.job.loading && nextProps.job.job) {
+      const job = nextProps.job.job;
+      const initialValues = {
+        title: job.title,
+        payout: job.payout,
+        venue: job.venue.name,
+        date: job.date,
+        description: job.description,
+        urgency: job.urgency,
+      };
+      nextProps.dispatch(initialize('jobCreationForm', initialValues));
+      this.setState({
+        formInitialized: true,
+        venue: job.venue.name,
+        venueLatLng: job.venue.location.coordinates,
+      });
+    }
+  }
+
   formSubmitHandler = (values) => {
     const {
-      initialValues, history, createJob, updateJob,
+      jobId, history, createJob, updateJob,
     } = this.props;
 
-    const v = this.state.venue || initialValues.venue;
-    const vll = this.state.venueLatLng || initialValues.venueLatLng;
+    const v = this.state.venue;
+    const vll = this.state.venueLatLng;
 
     const newJob = {
       title: values.title,
       payout: values.payout,
       date: values.date,
-      venue: {
+      venue: this.state.venue && {
         name: v,
         location: {
           type: 'Point',
-          coordinates: [vll.lat, vll.lng],
+          coordinates: vll,
         },
       },
       description: values.description,
     };
 
-    if (initialValues._id) {
-      updateJob(newJob);
+    if (jobId) {
+      updateJob(jobId, newJob);
       history.goBack();
     } else {
       createJob(newJob);
       history.push('/jobs');
     }
+  };
+
+  cancelBtnHandler = () => {
+    const { history } = this.props;
+    history.goBack();
   };
 
   venueSelectHandler = (venue) => {
@@ -46,14 +84,9 @@ class JobRegistrationPage extends React.Component {
       .then((latLng) => {
         this.setState({
           venue,
-          venueLatLng: latLng,
+          venueLatLng: [latLng.lat, latLng.lng],
         });
       });
-  };
-
-  cancelBtnHandler = () => {
-    const { history } = this.props;
-    history.goBack();
   };
 
   render() {
@@ -137,12 +170,14 @@ class JobRegistrationPage extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state, ownProps) => ({
   auth: state.auth,
-  initialValues: {},
+  job: state.job,
+  jobId: ownProps.match.params.id,
 });
 
 const mapDispatchToProps = {
+  loadJob,
   createJob,
   updateJob,
   deleteJob,
@@ -151,4 +186,5 @@ const mapDispatchToProps = {
 export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({
   form: 'jobCreationForm',
   enableReinitialize: true,
+  keepDirtyOnReinitialize: true,
 })(JobRegistrationPage));

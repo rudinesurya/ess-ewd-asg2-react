@@ -15,7 +15,7 @@ import { Button, Header, Icon } from 'semantic-ui-react';
  * @constructor
  */
 const JobDetailHeader = ({
-  authenticated, isHost, isGoing, dateString, jobId, jobTitle, hostName, takeJob, leaveJob,
+  authenticated, isHost, isGoing, dateString, jobId, jobTitle, hostName, takeJob, leaveJob, deleteJob,
 }) => (
   <div>
     <Header icon textAlign="center">
@@ -38,7 +38,10 @@ const JobDetailHeader = ({
       )}
 
       {isHost && (
-        <Button as={Link} to={`/updateJob/${jobId}`} content="Edit" />
+        <React.Fragment>
+          <Button as={Link} to={`/updateJob/${jobId}`} content="Edit" />
+          <Button onClick={deleteJob} content="Delete" color="red" />
+        </React.Fragment>
       )}
     </Button.Group>
   </div>

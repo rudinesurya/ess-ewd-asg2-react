@@ -52,7 +52,7 @@ const JobListItem = ({ job }) => {
 
                 <Item.Description>
                   {'Posted by '}
-                  <Link to={`/profile/${host}`}>{hostName}</Link>
+                  <Link to={`/profile/${host._id}`}>{hostName}</Link>
                 </Item.Description>
 
               </Item.Content>
