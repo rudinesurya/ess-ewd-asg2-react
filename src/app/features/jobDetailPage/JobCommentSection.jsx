@@ -12,10 +12,10 @@ import CommentForm from './CommentForm';
  * @returns {*}
  * @constructor
  */
-const JobCommentSection = ({ auth, comments, addComment, deleteComment }) => {
-  const sortedComments = comments.sort((a, b) => {
-    return new Date(a.createdDate) - new Date(b.createdDate);
-  });
+const JobCommentSection = ({
+  auth, comments, addComment, deleteComment,
+}) => {
+  const sortedComments = comments.sort((a, b) => new Date(a.createdDate) - new Date(b.createdDate));
 
   return (
     <React.Fragment>
@@ -35,8 +35,12 @@ const JobCommentSection = ({ auth, comments, addComment, deleteComment }) => {
             <Comment key={i}>
               <Comment.Avatar src={c.user.avatarUrl} />
               <Comment.Content>
-                <Comment.Author as={Link}
-                                to={`/profile/${c.user._id}`}>{c.user.name}</Comment.Author>
+                <Comment.Author
+                  as={Link}
+                  to={`/profile/${c.user._id}`}
+                >
+                  {c.user.name}
+                </Comment.Author>
                 <Comment.Metadata>
                   <div>{new Date(c.createdDate).toLocaleString()}</div>
                 </Comment.Metadata>

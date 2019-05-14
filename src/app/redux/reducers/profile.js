@@ -1,6 +1,6 @@
 import { createReducer } from 'redux-create-reducer';
 import {
-  CLEAR_PROFILE, LOAD_PROFILE, PROFILE_ERROR, PROFILE_START_REQUEST,
+  CLEAR_PROFILE, LOAD_PROFILE, PROFILE_ERROR, PROFILE_START_REQUEST, UPDATE_PROFILE,
 } from '../actionTypes/actionTypes';
 
 const initialState = {
@@ -9,38 +9,39 @@ const initialState = {
   error: {},
 };
 
-const beginLoading = (state, action) => {
-  return {
-    ...state,
-    loading: true,
-  };
-};
+const beginLoading = (state, action) => ({
+  ...state,
+  loading: true,
+});
 
-const loadProfile = (state, action) => {
-  return {
-    ...state,
-    loading: false,
-    profile: action.payload,
-  };
-};
+const loadProfile = (state, action) => ({
+  ...state,
+  loading: false,
+  profile: action.payload,
+  error: {},
+});
 
-const clearProfile = (state) => {
-  return {
-    ...state,
-    profile: null,
-  };
-};
+const setResult = (state, action) => ({
+  ...state,
+  result: action.payload,
+  error: {},
+});
 
-const profileError = (state, action) => {
-  return {
-    ...state,
-    error: action.payload,
-  };
-};
+const clearProfile = state => ({
+  ...state,
+  profile: null,
+  error: {},
+});
+
+const profileError = (state, action) => ({
+  ...state,
+  error: action.payload,
+});
 
 export default createReducer(initialState, {
   [PROFILE_START_REQUEST]: beginLoading,
   [LOAD_PROFILE]: loadProfile,
+  [UPDATE_PROFILE]: setResult,
   [CLEAR_PROFILE]: clearProfile,
   [PROFILE_ERROR]: profileError,
 });

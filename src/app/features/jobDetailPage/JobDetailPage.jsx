@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid } from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import { toast } from 'react-toastify';
 import JobCommentSection from './JobCommentSection';
 import JobDetailHeader from './JobDetailHeader';
 import JobDetailInfo from './JobDetailInfo';
@@ -16,29 +17,34 @@ class JobDetailPage extends React.Component {
     loadJob(jobId);
   }
 
-  takeJobHandler = () => {
+  takeJobHandler = async () => {
     const { jobId, joinJob } = this.props;
-    joinJob(jobId);
+    await joinJob(jobId);
+    toast.success('Join success');
   };
 
-  leaveJobHandler = () => {
+  leaveJobHandler = async () => {
     const { jobId, leaveJob } = this.props;
-    leaveJob(jobId);
+    await leaveJob(jobId);
+    toast.success('Leave success');
   };
 
-  addCommentHandler = (values) => {
+  addCommentHandler = async (values) => {
     const { jobId, postComment } = this.props;
-    postComment(jobId, { text: values.comment });
+    await postComment(jobId, { text: values.comment });
+    toast.success('Comment posted');
   };
 
-  deleteCommentHandler = (commentId) => {
+  deleteCommentHandler = async (commentId) => {
     const { jobId, deleteComment } = this.props;
-    deleteComment(jobId, commentId);
+    await deleteComment(jobId, commentId);
+    toast.success('Comment deleted');
   };
 
-  deleteJobHandler = () => {
+  deleteJobHandler = async () => {
     const { jobId, deleteJob } = this.props;
-    deleteJob(jobId);
+    await deleteJob(jobId);
+    toast.success('Job deleted');
   };
 
   render() {

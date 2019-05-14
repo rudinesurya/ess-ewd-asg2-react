@@ -8,7 +8,7 @@ import { Form, Label, Segment } from 'semantic-ui-react';
  */
 class GoogleMapSearchBar extends React.Component {
   state = {
-    address: '',
+    address: null,
   };
 
   handleChange = (address) => {
@@ -31,6 +31,7 @@ class GoogleMapSearchBar extends React.Component {
       searchOptions,
       meta: { touched, error },
     } = this.props;
+
     return (
       <React.Fragment>
 
@@ -38,7 +39,7 @@ class GoogleMapSearchBar extends React.Component {
           <label>{label}</label>
           <PlacesAutocomplete
             inputProps={{ ...input, placeholder }}
-            value={this.state.address || input.value}
+            value={this.state.address === null ? input.value : this.state.address}
             onChange={this.handleChange}
             onSelect={this.handleSelect}
             searchOptions={searchOptions}

@@ -3,14 +3,14 @@ import React from 'react';
 import { TextAreaField } from 'react-semantic-redux-form';
 import { Field, reduxForm, reset } from 'redux-form';
 import { Button, Form } from 'semantic-ui-react';
-
+import { combineValidators, composeValidators, hasLengthBetween, isRequired } from 'revalidate';
 
 /**
  * Component for rendering a comment form
  */
 class CommentForm extends React.Component {
-  onSubmitHandler = (values) => {
-    this.props.addComment(values);
+  onSubmitHandler = async (values) => {
+    await this.props.addComment(values);
     this.props.dispatch(reset('commentForm'));
   };
 
@@ -40,8 +40,15 @@ class CommentForm extends React.Component {
   }
 }
 
+const validate = combineValidators({
+  comment: composeValidators(
+    isRequired('comment'),
+    hasLengthBetween(3, 200)({ message: 'body must be between 3 to 200 chars' }),
+  )(),
+});
+
 CommentForm.propTypes = {
   addComment: PropTypes.func.isRequired,
 };
 
-export default reduxForm({ form: 'commentForm', enableReinitialize: true })(CommentForm);
+export default reduxForm({ form: 'commentForm', validate, enableReinitialize: true })(CommentForm);

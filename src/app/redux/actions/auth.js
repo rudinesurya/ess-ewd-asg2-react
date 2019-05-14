@@ -5,7 +5,7 @@ import {
   REGISTER_SUCCESS,
 } from '../actionTypes/actionTypes';
 
-export const loadCurrentUser = () => async dispatch => {
+export const loadCurrentUser = () => async (dispatch) => {
   if (localStorage.jwtToken) {
     setAuthToken(localStorage.jwtToken);
   }
@@ -31,8 +31,12 @@ export const loadCurrentUser = () => async dispatch => {
  * @param userData
  * @returns {Function}
  */
-export const registerUser = ({ name, email, password, password2 }) => async (dispatch) => {
-  const payload = { name, email, password, password2 };
+export const registerUser = ({
+  name, email, password, password2,
+}) => async (dispatch) => {
+  const payload = {
+    name, email, password, password2,
+  };
 
   try {
     const res = await axios.post('/api/users', payload);
@@ -81,7 +85,7 @@ export const loginUser = ({ email, password }) => async (dispatch) => {
  *
  * @returns {Function}
  */
-export const logoutUser = () => dispatch => {
+export const logoutUser = () => (dispatch) => {
   dispatch({ type: CLEAR_PROFILE });
   dispatch({ type: LOGOUT });
 };

@@ -9,14 +9,12 @@ const initialState = {
   user: null,
 };
 
-const loadCurrentUser = (state, action) => {
-  return {
-    ...state,
-    loading: false,
-    isAuthenticated: true,
-    user: action.payload,
-  };
-};
+const loadCurrentUser = (state, action) => ({
+  ...state,
+  loading: false,
+  isAuthenticated: true,
+  user: action.payload,
+});
 
 const setToken = (state, action) => {
   localStorage.setItem('jwtToken', action.payload); // Store token to local storage

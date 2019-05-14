@@ -1,9 +1,10 @@
 import React from 'react';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import { Button, Divider, Form, Grid, Segment } from 'semantic-ui-react';
-import { Field, initialize, reduxForm } from 'redux-form';
+import { Field, initialize, reduxForm, SubmissionError } from 'redux-form';
 import { InputField, TextAreaField } from 'react-semantic-redux-form';
 import { connect } from 'react-redux';
+import { toast } from 'react-toastify';
 import GoogleMapSearchBar from '../../utils/GoogleMapSearchBar';
 import { getCurrentProfile, updateCurrentProfile } from '../../redux/actions/profile';
 import Spinner from '../../utils/Spinner';
@@ -22,7 +23,7 @@ class EditProfilePage extends React.Component {
     if (this.state.formInitialized) return;
 
     if (!nextProps.profile.loading && nextProps.profile.profile) {
-      const profile = nextProps.profile.profile;
+      const { profile } = nextProps.profile;
       const initialValues = {
         name: profile.user.name,
         location: profile.location ? profile.location.name : '',
@@ -38,7 +39,7 @@ class EditProfilePage extends React.Component {
     }
   }
 
-  formSubmitHandler = (values) => {
+  formSubmitHandler = async (values) => {
     const {
       history, updateCurrentProfile,
     } = this.props;
@@ -58,8 +59,23 @@ class EditProfilePage extends React.Component {
       bio: values.bio,
     };
 
-    updateCurrentProfile(newProfile);
-    history.goBack();
+    await updateCurrentProfile(newProfile);
+
+    // Check for validation errors from server
+    const { error: { data, error } } = this.props.profile;
+    if (data) {
+      toast.error(error);
+      const keys = Object.keys(data);
+
+      keys.forEach((k) => {
+        throw new SubmissionError({
+          [k]: data[k],
+        });
+      });
+    } else {
+      toast.success('Profile updated');
+      history.goBack();
+    }
   };
 
   cancelBtnHandler = () => {
@@ -83,7 +99,7 @@ class EditProfilePage extends React.Component {
     if (profile.loading || profile.profile === null) return (<Spinner />);
 
     const {
-      handleSubmit, invalid, submitting, error,
+      handleSubmit, pristine, invalid, submitting, error,
     } = this.props;
     return (
       <Grid centered columns={2}>
@@ -105,7 +121,7 @@ class EditProfilePage extends React.Component {
                   type="text"
                   component={GoogleMapSearchBar}
                   options={{ types: ['(cities)'] }}
-                  placeholder="City"
+                  placeholder={this.state.location || 'City'}
                   onSelect={this.locationSelectHandler}
                 />
 

@@ -3,7 +3,7 @@ import {
   LOAD_PROFILE, PROFILE_ERROR, PROFILE_START_REQUEST, UPDATE_PROFILE,
 } from '../actionTypes/actionTypes';
 
-export const getCurrentProfile = () => async dispatch => {
+export const getCurrentProfile = () => async (dispatch) => {
   try {
     dispatch({ type: PROFILE_START_REQUEST });
     const res = await axios.get('/api/profiles/current');
@@ -19,7 +19,7 @@ export const getCurrentProfile = () => async dispatch => {
   }
 };
 
-export const getProfileByUserId = userId => async dispatch => {
+export const getProfileByUserId = userId => async (dispatch) => {
   try {
     dispatch({ type: PROFILE_START_REQUEST });
     const res = await axios.get(`/api/profiles/${userId}`);
@@ -36,7 +36,7 @@ export const getProfileByUserId = userId => async dispatch => {
   }
 };
 
-export const updateCurrentProfile = ({ location, bio }) => async dispatch => {
+export const updateCurrentProfile = ({ location, bio }) => async (dispatch) => {
   try {
     const res = await axios.post('/api/profiles/current/', { location, bio });
 

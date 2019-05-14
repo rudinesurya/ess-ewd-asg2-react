@@ -1,12 +1,13 @@
 import React from 'react';
 import { Button, Divider, Form, Grid, Segment } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import { Field, initialize, reduxForm } from 'redux-form';
+import { Field, initialize, reduxForm, SubmissionError } from 'redux-form';
 import { Checkbox, InputField, TextAreaField } from 'react-semantic-redux-form';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import { createJob, deleteJob, loadJob, updateJob } from '../../redux/actions/job';
 import MyDatePicker from '../../utils/MyDatePicker';
 import GoogleMapSearchBar from '../../utils/GoogleMapSearchBar';
+import { toast } from 'react-toastify';
 
 class JobRegistrationPage extends React.Component {
   state = {
@@ -24,7 +25,7 @@ class JobRegistrationPage extends React.Component {
     if (this.state.formInitialized) return;
 
     if (!nextProps.job.loading && nextProps.job.job) {
-      const job = nextProps.job.job;
+      const { job } = nextProps.job;
       const initialValues = {
         title: job.title,
         payout: job.payout,
@@ -42,7 +43,7 @@ class JobRegistrationPage extends React.Component {
     }
   }
 
-  formSubmitHandler = (values) => {
+  formSubmitHandler = async (values) => {
     const {
       jobId, history, createJob, updateJob,
     } = this.props;
@@ -65,11 +66,29 @@ class JobRegistrationPage extends React.Component {
     };
 
     if (jobId) {
-      updateJob(jobId, newJob);
-      history.goBack();
+      await updateJob(jobId, newJob);
     } else {
-      createJob(newJob);
-      history.push('/jobs');
+      await createJob(newJob);
+    }
+
+    // Check for validation errors from server
+    const { error: { data, error } } = this.props.job;
+    if (data) {
+      toast.error(error);
+      const keys = Object.keys(data);
+
+      keys.forEach(k => {
+        throw new SubmissionError({
+          [k]: data[k],
+        });
+      });
+    } else {
+      if (jobId) {
+        toast.success('Job updated');
+      } else {
+        toast.success('Job registered');
+      }
+      history.goBack();
     }
   };
 
@@ -91,7 +110,7 @@ class JobRegistrationPage extends React.Component {
 
   render() {
     const {
-      handleSubmit, invalid, submitting, error,
+      handleSubmit, pristine, invalid, submitting, error,
     } = this.props;
     return (
       <Grid centered columns={2}>
@@ -121,7 +140,7 @@ class JobRegistrationPage extends React.Component {
                   type="text"
                   component={GoogleMapSearchBar}
                   options={{ types: ['establishment'] }}
-                  placeholder="Venue"
+                  placeholder={this.state.venue || 'Venue'}
                   onSelect={this.venueSelectHandler}
                 />
 
