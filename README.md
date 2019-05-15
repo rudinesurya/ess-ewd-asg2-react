@@ -2,6 +2,8 @@
 
 Name: Rudine Surya Hartanto
 
+website url: https://ess-ewd-asg1.firebaseapp.com/
+
 server: https://github.com/rudinesurya/mern-web-asg2
 
 client: https://github.com/rudinesurya/ess-ewd-asg2-react
@@ -19,6 +21,11 @@ client: https://github.com/rudinesurya/ess-ewd-asg2-react
     + [Installation](#Installation)
     + [Configuration](#Configuration)
 
++ [App Component Design](#App-Component-Design)
++ [UI Design](#UI-Design)
++ [Routing](#Routing)
+    + [Protected Routing](#Protected-Routing)
+    + [Error Handling](#Error-Handling)
 
 + [Integration with Backend Api](#Integration-with-Backend-Api)
     + [Axios](#Axios)
@@ -56,6 +63,9 @@ It has some form of social networking feature, eg. the ability to view user's pr
  + View other user's profile
  + Edit self user profile
  + Join / Leave Job
+ + Custom Notifications
+ + Google Maps and Autocomplete
+ + Redux state management
  
 # Setup Requirements
 ### Installation
@@ -65,6 +75,41 @@ It has some form of social networking feature, eg. the ability to view user's pr
 ### Configuration
 change the axios.defaults.baseURL (in index.jsx) to your own endpoint
 
+
+# App Component Design
+Only root components are made to be stateful. 
+ie, they will have dependencies to 3rd party web api and be passing props down the tree to the stateless children components.
+
+<img src="readme_img/React Component Diagram.png" width="400">
+
+# UI Design
++ Using semantic-ui for its simple and clean ui theme.
++ Public / Private views: certain ui elements will be hidden when user are not authenticated.
+
+<img src="readme_img/jobdashboard.png" width="400">
+<img src="readme_img/jobdetail.png" width="400">
+
+# Routing
+route | view
+--- | ---
+/jobs | the job dashboard (homepage)
+/job/:id | detail view of a particular job (:id)
+/login | login page
+/register | registration page
+/updateJob/:id | job creation form
+/createJob | job creation form
+/profile/:id | user profile page
+/editProfile/:id | user profile edit form
+/error | error page
+
+### Protected Routing
++ /updateJob/:id
++ /createJob
++ /editProfile
+
+### Error Handling
++ Trying to access pages with invalid url or job/user id which does not exist will force the user to be redirected to an error page.
++ Unauthenticated user trying to access protected routes which require authentication, such as job creation or user profile editing page will be redirected to home page.
 
 # Integration with Backend Api
 ### Axios
@@ -157,6 +202,29 @@ const setAuthToken = (token) => {
 };
 ```
 ### Server Side Validations
+All the forms in the app uses server side validations.
 
+When the form gets submitted, it will call a rest call to the endpoint, 
+which will then return the result or the error.
+The error will then be used to render the error messages on the form.
+
+<img src="readme_img/validation_error_redux.png" width="400">
+
+<img src="readme_img/validation_error_form.png" width="400">
 
 # References 
+https://react.semantic-ui.com/
+
+https://redux.js.org/introduction/getting-started
+
+https://alligator.io/redux/redux-thunk/
+
+https://redux-form.com/8.1.0/docs/gettingstarted.md/
+
+https://github.com/jfairbank/revalidate#readme
+
+https://redux-form.com/8.1.0/examples/react-widgets/
+
+https://github.com/hibiken/react-places-autocomplete
+
+https://github.com/google-map-react/google-map-react
