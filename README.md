@@ -2,7 +2,7 @@
 
 Name: Rudine Surya Hartanto
 
-website url: https://ess-ewd-asg1.firebaseapp.com/
+website url: 
 
 server: https://github.com/rudinesurya/mern-web-asg2
 
@@ -39,6 +39,8 @@ client: https://github.com/rudinesurya/ess-ewd-asg2-react
     + [Server Side Validations](#Server-Side-Validations)
     
 + [Deployment](#Deployment)
+
++ [Third Party Libraries](#Third-Party-Libraries)
 
 + [References](#References)
 
@@ -80,14 +82,14 @@ change the axios.defaults.baseURL (in index.jsx) to your own endpoint
 Only root components are made to be stateful. 
 ie, they will have dependencies to 3rd party web api and be passing props down the tree to the stateless children components.
 
-<img src="readme_img/React Component Diagram.png" width="400">
+<img src="readme_img/React Component Diagram.png" width="800">
 
 # UI Design
 + Using semantic-ui for its simple and clean ui theme.
 + Public / Private views: certain ui elements will be hidden when user are not authenticated.
 
-<img src="readme_img/jobdashboard.png" width="400">
-<img src="readme_img/jobdetail.png" width="400">
+<img src="readme_img/jobdashboard.png" width="800">
+<img src="readme_img/jobdetail.png" width="800">
 
 # Routing
 route | view
@@ -211,6 +213,23 @@ The error will then be used to render the error messages on the form.
 <img src="readme_img/validation_error_redux.png" width="400">
 
 <img src="readme_img/validation_error_form.png" width="400">
+
+# Deployment
+Deployed to firebase
+
+# Third Party Libraries
++ google-map
++ react-places-autocomplete
++ prop-types
++ react-toastify
++ react-datepicker
++ react-redux
++ redux-form
++ redux-thunk
++ revalidate
++ semantic-ui-react
++ react-semantic-redux-form
++ redux-devtools
 
 # References 
 https://react.semantic-ui.com/
