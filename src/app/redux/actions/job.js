@@ -20,14 +20,25 @@ export const loadJob = jobId => async (dispatch, getState) => {
   }
 };
 
-export const loadJobs = () => async (dispatch, getState) => {
+export const loadJobs = (query, sortBy, page, limit) => async (dispatch, getState) => {
   try {
     dispatch({ type: JOB_START_REQUEST });
-    const res = await axios.get('/api/jobs');
+    const res = await axios.get('/api/jobs', {
+      params: {
+        query,
+        sortBy,
+        page,
+        limit,
+      },
+    });
 
     dispatch({
       type: LOAD_JOBS,
-      payload: res.data,
+      payload: {
+        docs: res.data.docs,
+        page: res.data.page,
+        pages: res.data.pages,
+      },
     });
   } catch (err) {
     dispatch({

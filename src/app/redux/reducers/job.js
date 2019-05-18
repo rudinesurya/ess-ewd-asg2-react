@@ -26,7 +26,9 @@ const loadJob = (state, action) => ({
 const loadJobs = (state, action) => ({
   ...state,
   loading: false,
-  jobs: action.payload,
+  jobs: action.payload.docs,
+  page: action.payload.page,
+  pages: action.payload.pages,
   error: {},
 });
 
@@ -38,6 +40,7 @@ const setResult = (state, action) => ({
 
 const jobError = (state, action) => ({
   ...state,
+  loading: false,
   error: action.payload,
 });
 
