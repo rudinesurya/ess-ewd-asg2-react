@@ -232,7 +232,7 @@ The error will then be used to render the error messages on the form.
 <img src="readme_img/validation_error_form.png" width="400">
 
 # Deployment
-Deployed to firebase
+Deployed to heroku
 
 # Third Party Libraries
 + google-map
