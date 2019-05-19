@@ -15,12 +15,27 @@ const SampleGuide = () => {
     },
   };
 
+  const data4 = {
+    'participants.0': {
+      '$exists': true,
+    },
+  };
+
+
+  const sort = {
+    date: -1,
+  };
+
   return (
     <div>
       <label>Sample</label>
       <pre>{JSON.stringify(data, null, 2)}</pre>
       <pre>{JSON.stringify(data2, null, 2)}</pre>
       <pre>{JSON.stringify(data3, null, 2)}</pre>
+      <pre>{JSON.stringify(data4, null, 2)}</pre>
+
+      <label>Sort By</label>
+      <pre>{JSON.stringify(sort, null, 2)}</pre>
     </div>
   );
 };

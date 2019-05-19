@@ -62,9 +62,9 @@ class EditProfilePage extends React.Component {
     await updateCurrentProfile(newProfile);
 
     // Check for validation errors from server
-    const { error: { data, error } } = this.props.profile;
+    const { error: { data, error, message } } = this.props.profile;
     if (data) {
-      toast.error(error);
+      toast.error(message);
       const keys = Object.keys(data);
 
       keys.forEach((k) => {

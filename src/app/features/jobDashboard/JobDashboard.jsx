@@ -11,13 +11,11 @@ import SampleGuide from './SampleGuide';
 class JobDashboard extends React.Component {
   state = {
     query: null,
-    sortBy: '-date',
-    activePage: 1,
-    pageLimit: 3,
+    sortBy: null,
   };
 
   componentDidMount() {
-    this.reloadJobs(this.state);
+    this.reloadJobs({ sortBy: JSON.stringify({ date: -1 }), page: 1, limit: 3 });
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -30,45 +28,46 @@ class JobDashboard extends React.Component {
       });
     }
 
-    const { error: { data, error } } = job;
+    const { error: { data, error, message } } = job;
     if (error) {
-      toast.error(error);
-    }
-  }
-
-  componentWillUpdate(nextProps, nextState, nextContext) {
-    if (this.state.sortBy !== nextState.sortBy
-      || this.state.query !== nextState.query
-      || this.state.activePage !== nextState.activePage
-      || this.state.pageLimit !== nextState.pageLimit
-    ) {
-      this.reloadJobs(nextState);
+      toast.error(message);
     }
   }
 
   pageChangeHandler = (event, data) => {
-    this.setState({
-      activePage: data.activePage,
-    });
+    this.reloadJobs({ ...this.state, page: data.activePage });
   };
 
   formSubmitHandler = (values) => {
     const { query, sortBy } = values;
-    this.setState({
-      query,
-      sortBy,
-    });
+    this.reloadJobs({ query, sortBy, page: 1 });
   };
 
   reloadJobs = ({
-    query, sortBy, activePage, pageLimit,
+    query, sortBy, page, limit,
   }) => {
+    let newState = { ...this.state };
+    if (query) {
+      newState = { ...newState, query };
+    } else {
+      newState = { ...newState, query: JSON.stringify({}) };
+    }
+    if (sortBy) {
+      newState = { ...newState, sortBy };
+    } else {
+      newState = { ...newState, sortBy: JSON.stringify({}) };
+    }
+    if (page) newState = { ...newState, page };
+    if (limit) newState = { ...newState, limit };
+
+    this.setState({ ...newState });
+
     const { loadJobs } = this.props;
     loadJobs(
-      query,
-      sortBy,
-      activePage,
-      pageLimit,
+      newState.query,
+      newState.sortBy,
+      newState.page,
+      newState.limit,
     );
   };
 
@@ -82,7 +81,7 @@ class JobDashboard extends React.Component {
           <React.Fragment>
             <JobList jobs={job.jobs} />
             <Pagination
-              activePage={this.state.activePage}
+              activePage={this.state.page}
               totalPages={this.state.pages}
               onPageChange={this.pageChangeHandler}
             />

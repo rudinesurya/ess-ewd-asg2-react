@@ -6,11 +6,10 @@ import {
 } from '../actionTypes/actionTypes';
 
 export const loadCurrentUser = () => async (dispatch) => {
-  if (localStorage.jwtToken) {
-    setAuthToken(localStorage.jwtToken);
-  }
+  if (!localStorage.jwtToken) return;
 
   try {
+    setAuthToken(localStorage.jwtToken);
     const res = await axios.get('/api/users/current');
 
     dispatch({

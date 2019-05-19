@@ -2,6 +2,7 @@ import React from 'react';
 import { Grid } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
+import dateFormat from 'dateformat';
 import JobCommentSection from './JobCommentSection';
 import JobDetailHeader from './JobDetailHeader';
 import JobDetailInfo from './JobDetailInfo';
@@ -52,7 +53,7 @@ class JobDetailPage extends React.Component {
     if (auth.loading || job.loading || job.job === null) return <Spinner />;
 
     const authenticated = auth.isAuthenticated;
-    const dateString = new Date(job.job.date).toLocaleDateString();
+    const dateString = dateFormat(new Date(job.job.date), 'dddd, mmmm dS, yyyy, h:MM:ss TT');
     const {
       title, host: { _id: hostId, name: hostName }, description, venue: { name, location: { coordinates } }, comments, participants,
     } = job.job;

@@ -24,7 +24,7 @@ class JobRegistrationPage extends React.Component {
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.state.formInitialized) return;
 
-    if (!nextProps.job.loading && nextProps.job.job) {
+    if (nextProps.jobId && !nextProps.job.loading && nextProps.job.job) {
       const { job } = nextProps.job;
       const initialValues = {
         title: job.title,
@@ -63,6 +63,7 @@ class JobRegistrationPage extends React.Component {
         },
       },
       description: values.description,
+      urgency: values.urgency,
     };
 
     if (jobId) {
@@ -72,9 +73,9 @@ class JobRegistrationPage extends React.Component {
     }
 
     // Check for validation errors from server
-    const { error: { data, error } } = this.props.job;
+    const { error: { data, error, message } } = this.props.job;
     if (data) {
-      toast.error(error);
+      toast.error(message);
       const keys = Object.keys(data);
 
       keys.forEach(k => {

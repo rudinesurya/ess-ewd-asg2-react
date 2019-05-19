@@ -1,6 +1,6 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { InputField, TextAreaField } from 'react-semantic-redux-form';
+import { TextAreaField } from 'react-semantic-redux-form';
 import { Button, Divider, Form } from 'semantic-ui-react';
 
 const Controller = ({ onSubmitHandler, handleSubmit, pristine, invalid, submitting, error }) => {
@@ -16,8 +16,8 @@ const Controller = ({ onSubmitHandler, handleSubmit, pristine, invalid, submitti
       <Field
         name="sortBy"
         label="sortBy"
-        type="text"
-        component={InputField}
+        rows="2"
+        component={TextAreaField}
       />
 
       <Divider horizontal />

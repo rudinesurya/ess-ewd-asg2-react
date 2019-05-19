@@ -21,9 +21,10 @@ class NavBar extends Component {
     history.push('/register');
   };
 
-  logoutHandler = () => {
-    const { logoutUser } = this.props;
-    logoutUser();
+  logoutHandler = async () => {
+    const { history, logoutUser } = this.props;
+    await logoutUser();
+    history.push('/login');
   };
 
   render() {

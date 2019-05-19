@@ -12,8 +12,8 @@ import './index.css';
 import store from './app/redux/store';
 import { loadCurrentUser, setCurrentUser } from './app/redux/actions/auth';
 
-// axios.defaults.baseURL = 'https://ess-ewd-nodeserver.herokuapp.com';
-axios.defaults.baseURL = 'http://localhost:3002';
+axios.defaults.baseURL = 'https://ess-ewd-nodeserver.herokuapp.com';
+// axios.defaults.baseURL = 'http://localhost:3002';
 
 store.dispatch(loadCurrentUser());
 

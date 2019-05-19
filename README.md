@@ -34,7 +34,8 @@ client: https://github.com/rudinesurya/ess-ewd-asg2-react
         + [The reducer store the payload in the state](#The-reducer-store-the-payload-in-the-state)
         + [Mapping the data from redux store to props](#Mapping-the-data-from-redux-store-to-props)
         + [Getting the data from props](#Getting-the-data-from-props)
-        
+
+    + [LiveData](#LiveData) 
     + [Authentication](#Authentication)
     + [Server Side Validations](#Server-Side-Validations)
     
@@ -116,7 +117,7 @@ route | view
 # Integration with Backend Api
 ### Axios
 Axios is a promise based HTTP client for making HTTP requests from a browser to any web server.
-```$xslt
+```js
 axios.get(‘/url’,{data:’data’}).then((res)=>{
     //on success
 }).catch((error)=>{
@@ -131,7 +132,7 @@ axios.post(‘/url’,{data:’data’}).then((res)=>{
 ```
 ##### Loading the data during ComponentDidMount
 When the components loads, this will trigger this lifecycle to fire the loadJobs() action.
-```$xslt
+```js
 componentDidMount() {
     const { loadJobs } = this.props;
     loadJobs();
@@ -140,7 +141,7 @@ componentDidMount() {
 
 ##### Sending the data to the reducer
 The rest call inside will return a json output, which will be sent as payload to the reducer.
-```$xslt
+```js
 export const loadJobs = () => async (dispatch, getState) => {
   try {
     dispatch({ type: JOB_START_REQUEST });
@@ -160,7 +161,7 @@ export const loadJobs = () => async (dispatch, getState) => {
 ```
 ##### The reducer store the payload in the state
 The reducer will receive the payload and update its state.
-```$xslt
+```js
 const loadJobs = (state, action) => ({
   ...state,
   loading: false,
@@ -171,14 +172,14 @@ const loadJobs = (state, action) => ({
 
 ##### Mapping the data from redux store to props
 In the component, we can access the redux store by connecting this method. And then we can map this data to props for the component to use.
-```$xslt
+```js
 const mapStateToProps = state => ({
   job: state.job,
 });
 ```
 ##### Getting the data from props
 After the mapping, we are free to use the data.
-```$xslt
+```js
 render() {
     const { job } = this.props;
     if (job.loading) return (<Spinner />);
@@ -189,12 +190,28 @@ render() {
   }
 ```
 
+### LiveData
+The Pusher enables the client to listen for changes in the server. 
+
+<img src="https://media.giphy.com/media/8hYu8vyddCIbQId7f1/giphy.gif" width="600">
+
+```js
+// The react app will listen to this channel, for simplicity, the page will reload when a change stream is observed.
+const channel = pusher.subscribe(jobId);
+channel.bind('postComment', (data)=> {
+  dispatch(loadJob(jobId));
+});
+channel.bind('deleteComment', (data)=> {
+  dispatch(loadJob(jobId));
+});
+```
+
 ### Authentication
 Authentication is handled by our backend service using json web token. 
 The client app just need to store the token in localstorage to enable the web app to keep the user logged in during page refresh.
 This token will be passed to the header of the rest api requests for accessing restricted resources.
 The code below enables all axios calls to be set with the authenticated token. If it exists.
-```$xslt
+```js
 const setAuthToken = (token) => {
   if (token) {
     axios.defaults.headers.common.Authorization = `Bearer ${token}`;
@@ -228,6 +245,7 @@ Deployed to firebase
 + redux-thunk
 + revalidate
 + semantic-ui-react
++ date-format
 + react-semantic-redux-form
 + redux-devtools
 

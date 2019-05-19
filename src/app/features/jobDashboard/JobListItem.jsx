@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Fragment } from 'react';
+import dateFormat from 'dateformat';
 import { Link } from 'react-router-dom';
 import { Button, Icon, Item, Label, Segment } from 'semantic-ui-react';
 
@@ -10,7 +11,7 @@ const JobListItem = ({ job }) => {
 
   const jobAlreadyPast = date && date < Date.now();
   const dateColor = jobAlreadyPast ? 'red' : 'green';
-  const dateString = date && date.toLocaleString();
+  const dateString = date && dateFormat(date, 'dddd, mmmm dS, yyyy, h:MM:ss TT');
 
   return (
     <Fragment>
