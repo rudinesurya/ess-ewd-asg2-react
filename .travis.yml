@@ -9,6 +9,9 @@ notifications:
     on_success: never
     on_failure: always
 
+script:
+  - npm run build
+
 deploy:
   provider: firebase
   token:
