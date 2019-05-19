@@ -2,7 +2,7 @@
 
 Name: Rudine Surya Hartanto
 
-website url: 
+website url: https://ess-ewd-react.firebaseapp.com/
 
 server: https://github.com/rudinesurya/mern-web-asg2
 
@@ -232,7 +232,7 @@ The error will then be used to render the error messages on the form.
 <img src="readme_img/validation_error_form.png" width="400">
 
 # Deployment
-Deployed to heroku
+Deployed to firebase
 
 # Third Party Libraries
 + google-map

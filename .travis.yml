@@ -1,0 +1,16 @@
+dist: trusty
+language: javascript
+node_js:
+  - stable
+notifications:
+  email:
+    recipients:
+      - rudinesurya@gmail.com
+    on_success: never
+    on_failure: always
+
+deploy:
+  provider: firebase
+  token:
+    secure: 1/tEe0rK73-teoXWnLUIDF5WhGsLmGtMGlJ_ybAwi-BO4
+  project: ess-ewd-react

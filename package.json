@@ -42,7 +42,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "eslint": "eslint --fix . --ext .jsx,.js src"
+    "eslint": "eslint --fix . --ext .jsx,.js src",
+    "deploy": "npm run build && firebase deploy"
   },
   "browserslist": {
     "production": [
