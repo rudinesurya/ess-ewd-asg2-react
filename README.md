@@ -76,7 +76,9 @@ It has some form of social networking feature, eg. the ability to view user's pr
 + npm start
 
 ### Configuration
-change the axios.defaults.baseURL (in index.jsx) to your own endpoint
+change the axios.defaults.baseURL (in index.jsx) to your own endpoint. Also make sure that the port of the server and this app are not the same.
+
+warning: certain pages can be loading forever if the user is not authenticated. To avoid this, you have to login before accessing any pages except the homepage.
 
 
 # App Component Design
@@ -191,7 +193,7 @@ render() {
 ```
 
 ### LiveData
-The Pusher enables the client to listen for changes in the server. 
+The Pusher enables the client to listen for changes in the server. React to real-time date changes. 
 
 <img src="https://media.giphy.com/media/8hYu8vyddCIbQId7f1/giphy.gif" width="600">
 
